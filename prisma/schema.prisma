@@ -13,6 +13,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Session {
+  id        String   @id @default(uuid())
+  sid       String   @unique
+  data      String   @db.Text
+  expiresAt DateTime
+}
+
 model User {
   id       Int       @id @default(autoincrement())
   name     String
@@ -21,14 +28,10 @@ model User {
 }
 
 model Upload {
-  id       Int      @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
   userId   Int
   imageUrl String
-  author   User     @relation(fields: [userId], references: [id])
-}
+  User     User   @relation(fields: [userId], references: [id])
 
-model Session {
-  id        String   @id @default(uuid())
-  sid       String   @unique
-  expiresAt DateTime
+  @@index([userId], name: "userId_idx")
 }
